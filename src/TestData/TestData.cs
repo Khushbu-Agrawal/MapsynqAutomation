@@ -6,7 +6,7 @@ using System.Text;
 namespace MapsynQ.TestData
 {
     // Base class to serve all test data classes
-    abstract class TestData
+    public abstract class TestData
     {
         // Constants
         private const String TD_FOLDER_ENV_STR = "TestDataFolder";
@@ -24,7 +24,7 @@ namespace MapsynQ.TestData
             if (String.IsNullOrEmpty(testFolderPath))
             {
                 Console.WriteLine("Error: Failed to get 'TestDataFolder' environment variable!");
-                return null;
+                return "";
             }
 
             return (testFolderPath + "/" + p_FileName);

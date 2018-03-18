@@ -19,14 +19,20 @@ namespace MapsynQ.TestData
         public string userName { get; set; }
         public string password { get; set; }
 
+        // Constructor
+        public SignInTestData()
+        {
+            Load(); // load test data
+        }
+
         // Load TD for SignIn page test cases
         public override void Load()
         {
             if (isLoaded) return; // don't reload
 
-            var json = File.ReadAllText(GetFilePath(TD_FILE_NAME));
             try
             {
+                var json = File.ReadAllText(GetFilePath(TD_FILE_NAME));
                 var jObject = JObject.Parse(json);
                 if (jObject == null) return;
 

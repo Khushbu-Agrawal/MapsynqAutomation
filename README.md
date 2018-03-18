@@ -19,7 +19,10 @@ These instructions will get you a copy of the project up and running on your loc
 * Clone or download this project
 * Build project in VS2013
 * Configure TestData (more details below)
-* Add MSTest.exe to your environment variable
+* Add MSTest.exe to your PATH environment
+* Add ChromeDriver.exe parent directory to your PATH environment
+* Mount E drive using below DOS command (in admin mode) to avoid ChromeDriver error "no disk there is no disk in the drive. please insert a disk into drive e:"
+  mountvol e: /d
 ```
 
 ### Configurations
@@ -50,10 +53,9 @@ Below is the sample json structure for test data for SignIn page.
 ```
 A sample of this this file is avaible in TestData/SignIn.json already.
 
-
 ## Running the tests
 
-You can also run tests using MsTest.exe on DOS prompt which provides detailed test report along with the test report file.
+Run tests using MsTest.exe on DOS prompt which provides detailed test report along with the test report file.
 ```
 C:\Users\khushbu>mstest.exe /testcontainer:MapsynqAutomation.dll /resultsfile:TestResult.trx
 Microsoft (R) Test Execution Command Line Tool Version 12.0.21005.1

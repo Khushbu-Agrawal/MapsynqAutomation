@@ -22,24 +22,9 @@ namespace MapsynQ.Tests
     public class SignInPageTest : BaseTest
     {
         // Test data for this class
-        private static SignInTestData testData;
+        private SignInTestData testData = new SignInTestData();
 
-        ////////////////////////////////////////////////////////////////////
-
-        [ClassInitialize]
-        public static void ClassInit(TestContext context)
-        {
-            // Load test data
-            testData = new SignInTestData();
-            testData.Load();
-        }
-
-        [ClassCleanup]
-        public static void ClassClean()
-        {
-        }
-
-        ////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
 
         [TestInitialize]
         public void TestInit()
@@ -58,8 +43,10 @@ namespace MapsynQ.Tests
         [TestMethod]
         public void TestSignIn()
         {
-            HomePage homePage = new HomePage(GetDriver());
+            // Verify TestData is loaded properly
+            Assert.IsTrue(testData.isLoaded, "TestData load FAILED");
 
+            HomePage homePage = new HomePage(GetDriver());
             SignInPage signInPage = homePage.GoToSignInPage();
             Assert.IsNotNull(signInPage, "GoToSignInPage() FAILED");
             if (signInPage == null) return; // Test failed
@@ -78,8 +65,10 @@ namespace MapsynQ.Tests
         [TestMethod]
         public void TestInvalidSignIn()
         {
-            HomePage homePage = new HomePage(GetDriver());
+            // Verify TestData is loaded properly
+            Assert.IsTrue(testData.isLoaded, "TestData load FAILED");
 
+            HomePage homePage = new HomePage(GetDriver());
             SignInPage signInPage = homePage.GoToSignInPage();
             Assert.IsNotNull(signInPage, "GoToSignInPage() FAILED");
             if (signInPage == null) return; // Test failed
