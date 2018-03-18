@@ -19,12 +19,13 @@ These instructions will get you a copy of the project up and running on your loc
 * Clone or download this project
 * Build project in VS2013
 * Configure TestData (more details below)
+* Add MSTest.exe to your environment variable
 ```
 
 ### Configurations
 
 You need to setup few environment variables to run the test. It's designed to be able to easily configure test data and store it individually, so that test data management is easy. Just configure following environment variables.
-Either set below environment varibales on the Windows Environemnt Variable or in the DOS shell using command SET <variable_name> <value>
+Either set below environment variables on the Windows Environment Variable or in the DOS shell using command 'SET <variable_name> <value>'
 
 #### TestConfigFilePath
 Set environment variable with name 'TestConfigFilePath' and point it to a json file with below structure.
@@ -52,7 +53,30 @@ A sample of this this file is avaible in TestData/SignIn.json already.
 
 ## Running the tests
 
-Run all tests from VS menu Test -> Run -> All Tests
+You can also run tests using MsTest.exe on DOS prompt which provides detailed test report along with the test report file.
+```
+C:\Users\khushbu>mstest.exe /testcontainer:MapsynqAutomation.dll /resultsfile:TestResult.trx
+Microsoft (R) Test Execution Command Line Tool Version 12.0.21005.1
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Loading MapsynqAutomation.dll...
+Starting execution...
+
+Results               Top Level Tests
+-------               ---------------
+Passed                MapsynQ.Tests.SignInPageTest.TestInvalidSignIn
+Passed                MapsynQ.Tests.SignInPageTest.TestSignIn
+2/2 test(s) Passed
+
+Summary
+-------
+Test Run Completed.
+  Passed  2
+  ---------
+  Total   2
+Results file:  C:\Users\khushbu\TestResults.trx
+Test Settings: Default Test Settings
+```
 
 ## Coding/Design guidelines
 
