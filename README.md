@@ -55,7 +55,7 @@ A sample of this this file is avaible in TestData/SignIn.json already.
 
 ## Running the tests
 
-Run tests using MsTest.exe on DOS prompt which provides detailed test report along with the test report file.
+Run tests using MsTest.exe on DOS prompt which provides detailed test report.
 ```
 C:\Users\khushbu>mstest.exe /testcontainer:MapsynqAutomation.dll /resultsfile:TestResult.trx
 Microsoft (R) Test Execution Command Line Tool Version 12.0.21005.1
