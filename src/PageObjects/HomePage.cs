@@ -17,8 +17,10 @@ namespace MapsynQ.PageObjects
     // Class provides all interactions with home page of the application
     class HomePage : BasePage
     {
+        private const String PAGE_TITLE = "mapSYNQ - Live Traffic Information Platform";
+
         [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Sign in')]")]
-        private IWebElement signin;
+        private IWebElement signIn;
 
         // Constructor
         public HomePage(IWebDriver p_Driver)
@@ -27,11 +29,24 @@ namespace MapsynQ.PageObjects
             PageFactory.InitElements(driver, this);
         }
 
+        public bool VerifyPage()
+        {
+            try
+            {
+                return (driver.Title.ToUpper() == PAGE_TITLE.ToUpper());
+            }
+               
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyPage(), error: " + ex.ToString());
+            }
+        }
+
         public SignInPage GoToSignInPage()
         {
             try
             {
-                signin.Click();
+                signIn.Click();
                 return new SignInPage(driver);
             }
             catch (Exception ex)

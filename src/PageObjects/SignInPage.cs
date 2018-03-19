@@ -13,6 +13,7 @@ using OpenQA.Selenium.Support.UI;
 using MapsynQ.PageObjects;
 
 
+
 namespace MapsynQ.PageObjects
 {
     // Class provides all interactions with SignIn page
@@ -20,6 +21,9 @@ namespace MapsynQ.PageObjects
     {
         // Constants
         private const String PAGE_TITLE = "Sign In";
+        private const String SIGN_IN_ERROR_MES = "Invalid user/password combination";
+        private const String SIGN_IN_ERROR_MES_INACTIVE_USER = "Your account is not activated yet, contact support@mapsynq.com";
+        private const String SIGN_IN_PASSWORD_RESET_MES = "A new password has been sent to your mail. <b>Please check your Spam folder and add our address to your Address Book</b>";
 
         [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Sign In')]")]
         private IWebElement signInText = null;
@@ -36,6 +40,10 @@ namespace MapsynQ.PageObjects
         [FindsBy(How = How.Id, Using = "notice")]
         private IWebElement signInError = null;
 
+        [FindsBy(How = How.XPath, Using = "//a[@href='forgot_password']")]
+        private IWebElement forgotPassword = null;
+
+
         // Constructor
         public SignInPage(IWebDriver p_Driver)
         {
@@ -47,18 +55,16 @@ namespace MapsynQ.PageObjects
         {
             try
             {
-                return (signInText.Text == PAGE_TITLE);
+                return (signInText.Text.ToUpper() == PAGE_TITLE.ToUpper());
             }
             catch (Exception ex)
             {
-                return LogError("Exception caught while performing VerifySignPage(), error: " + ex.ToString());
+                return LogError("Exception caught while performing VerifyPage(), error: " + ex.ToString());
             }
         }      
 
         public bool SetUserName(String p_UserName)
         {
-            if (!Validate(p_UserName)) return false;
-
             try
             {
                 if (!userName.Enabled || !userName.Displayed)
@@ -79,8 +85,6 @@ namespace MapsynQ.PageObjects
 
         public bool SetPassword(String p_Password)
         {
-            if (!Validate(p_Password)) return false;
-
             try
             {
                 if (!password.Enabled)
@@ -99,32 +103,31 @@ namespace MapsynQ.PageObjects
             return true;
         }
 
-        public SignInPage ClickSignInButton()
+        public bool ClickSignInButton()
         {
             try
             {
                 if (!signInButton.Enabled || !signInButton.Displayed)
                 {
-                    LogError("Sign In button is disabled or invisible");
-                    return null;
+                    return LogError("Sign In button is disabled or invisible");
                 }
 
                 signInButton.Click();
-                return new SignInPage(driver);
+                return true;
             }
             catch (Exception ex)
             {
                 LogError("Exception caught while performing ClickSignInButton(), error: " + ex.ToString());
             }
 
-            return null;
+            return false;
         }
 
         public String GetSignInError()
         {
             try
             {
-                return signInError.Text;
+                return signInError.Text.ToUpper();
             }
             catch (Exception ex)
             {
@@ -136,7 +139,17 @@ namespace MapsynQ.PageObjects
 
         public bool VerifySignInErrorMessage()
         {
-            return (GetSignInError() == "Invalid user/password combination");
+            return (GetSignInError()== SIGN_IN_ERROR_MES.ToUpper());
+        }
+
+        public bool VerifySignInErrorMessageInactiveUser()
+        {
+            return (GetSignInError() == SIGN_IN_ERROR_MES_INACTIVE_USER.ToUpper());
+        }
+
+        public bool VerifySignInPasswordResetMessage()
+        {
+            return (GetSignInError() == SIGN_IN_PASSWORD_RESET_MES.ToUpper());
         }
 
         public bool ClickSignOut()
@@ -160,5 +173,26 @@ namespace MapsynQ.PageObjects
             return true;
         }
 
+
+        public ForgotPasswordPage GoToForgotPasswordPage()
+        {
+            try
+            {
+                if (!forgotPassword.Enabled || !forgotPassword.Displayed)
+                {
+                    LogError("Forgot Password Link is disabled or invisible");
+                    return null;
+                }
+
+                forgotPassword.Click();
+                return new ForgotPasswordPage(driver);
+            }
+            catch (Exception ex)
+            {
+                LogError("Exception caught while performing GoToForgotPasswordPage(), error: " + ex.ToString());
+            }
+
+            return null;
+        }
     }
 }

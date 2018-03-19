@@ -1,5 +1,37 @@
 {
-	"TestName": "Login Test",
-	"UserName": "mapsynqtesting@gmail.com",
-	"Password": "mapsynqtesting"
+	"TestSignIn":
+	{
+		"UserName": "mapsynqtesting@gmail.com",
+		"Password": "mapsynqtesting"
+	},
+	"TestInvalidSignIn":
+	{
+		"UserName": "invalidUser@gmail.com",
+		"Password": "invalidPassword"
+	},
+	"TestSignInInActiveUser":
+	{
+		"UserName": "inactiveUser@gmail.com",
+		"Password": "inactivePassword"
+	},
+	"TestSignInWithUserNameOnly":
+	{
+		"UserName": "dummyUser@dummy.com",
+		"Password": ""
+	},
+	"TestSignInWithPasswordOnly":
+	{
+		"UserName": "",
+		"Password": "dummyPassword"
+	},
+	"TestSignInWithoutUserNameAndPassword":
+	{
+		"UserName": "",
+		"Password": ""
+	},
+	"TestSignInForgotPassword":
+	{
+		"UserName": "",
+		"Password": ""
+	}
 }

@@ -9,15 +9,19 @@ using Newtonsoft.Json.Linq;
 
 namespace MapsynQ.TestData
 {
-    class SignInTestData : TestData
+    public class SignInData
+    {
+        public String userName;
+        public String password;
+    };
+
+    public class SignInTestData : TestData
     {
         // Constants
         private const String TD_FILE_NAME = "SignIn.json";
 
         // Class data
-        public string testName { get; set; }
-        public string userName { get; set; }
-        public string password { get; set; }
+        private Dictionary<String, SignInData> dataSet;
 
         // Constructor
         public SignInTestData()
@@ -30,28 +34,27 @@ namespace MapsynQ.TestData
         {
             if (isLoaded) return; // don't reload
 
+            dataSet = new Dictionary<String, SignInData>();
             try
             {
-                var json = File.ReadAllText(GetFilePath(TD_FILE_NAME));
-                var jObject = JObject.Parse(json);
-                if (jObject == null) return;
-
-                testName = jObject["TestName"].ToString();
-                userName = jObject["UserName"].ToString();
-                password = jObject["Password"].ToString();
-
-                // Testing only
-                Console.WriteLine("\tTestName: " + jObject["TestName"].ToString());
-                Console.WriteLine("\tUserName: " + jObject["UserName"].ToString());
-                Console.WriteLine("\tPassword: " + jObject["Password"].ToString());
-
-                isLoaded = true;
+                String jsonString = File.ReadAllText(GetFilePath(TD_FILE_NAME));
+                dataSet = JsonConvert.DeserializeObject<Dictionary<String, SignInData>>(jsonString);
+                if ((dataSet != null) && dataSet.Count() > 0)
+                {
+                    isLoaded = true;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception caught while loading test data for SignIn, error: " + ex.ToString());
             }
         }
-        
+
+        // Returns SignIndata for input test name
+        public SignInData GetTestData(String p_TestName)
+        {
+            return dataSet[p_TestName];
+        }
+
     }
 }

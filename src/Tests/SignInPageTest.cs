@@ -19,69 +19,159 @@ using MapsynQ.TestData;
 namespace MapsynQ.Tests
 {
     [TestClass]
-    public class SignInPageTest : BaseTest
+    public class SignInPageTest : TestBase
     {
         // Test data for this class
         private SignInTestData testData = new SignInTestData();
+        private IWebDriver driver;
 
         //////////////////////////////////////////////////////////////////////
 
         [TestInitialize]
         public void TestInit()
         {
-            InitDriver(); // Setup driver
+            driver = InitDriver(); // Setup driver
         }
 
         [TestCleanup]
         public void TestClean()
         {
-            GetDriver().Close(); // Cleanup driver
+            driver.Close(); // Cleanup driver
         }
 
         ////////////////////////////////////////////////////////////////////
 
+        // Helper test function to perform common SignIn routine
+        private SignInPage PerformSignIn(SignInData p_SignInData)
+        {
+            // Verify driver is initialized
+            Assert.IsNotNull(driver, "Driver initialization FAILED");
+
+            // Verify input SignInData
+            Assert.IsNotNull(p_SignInData, "TestData load FAILED");
+
+            // Verify Home page is loaded
+            HomePage homePage = new HomePage(driver);
+            Assert.IsTrue(homePage.VerifyPage(), "HomePage VerifyPage() FAILED");
+
+            // Verify SignIn page is loaded
+            SignInPage signInPage = homePage.GoToSignInPage();
+            Assert.IsNotNull(signInPage, "GoToSignInPage() FAILED");
+            Assert.IsTrue(signInPage.VerifyPage(), "SignInPage VerifyPage() FAILED");
+
+            // Verify test data are set
+            Assert.IsTrue(signInPage.SetUserName(p_SignInData.userName), "SetUserName() FAILED");
+            Assert.IsTrue(signInPage.SetPassword(p_SignInData.password), "SetPassword() FAILED");
+
+            // Verify SigIn button is clicked
+            Assert.IsTrue(signInPage.ClickSignInButton(), "ClickSignInButton() FAILED");
+
+            return signInPage;
+        }
+
         [TestMethod]
         public void TestSignIn()
         {
-            // Verify TestData is loaded properly
-            Assert.IsTrue(testData.isLoaded, "TestData load FAILED");
+            // Verify TestData is loaded
+            Assert.IsNotNull(testData, "TestData load FAILED");
 
-            HomePage homePage = new HomePage(GetDriver());
-            SignInPage signInPage = homePage.GoToSignInPage();
-            Assert.IsNotNull(signInPage, "GoToSignInPage() FAILED");
-            if (signInPage == null) return; // Test failed
+            // Perform SigIn
+            SignInData signInData = testData.GetTestData("TestSignIn");
+            PerformSignIn(signInData);
 
-            bool isPageVerified = signInPage.VerifyPage();
-            Assert.IsTrue(isPageVerified, "VerifyPage() FAILED");
-            if (!isPageVerified) return; // Test failed
-
-            Assert.IsTrue(signInPage.SetUserName(testData.userName), "SetUserName() FAILED");
-            Assert.IsTrue(signInPage.SetPassword(testData.password), "SetPassword() FAILED");
-            Assert.IsNotNull(signInPage.ClickSignInButton(), "ClickSignInButton() FAILED");
-
-            // @todo - check signin success
+            // Verify SignInSuccessPage is loaded
+            SignInSuccessPage signInSuccessPage = new SignInSuccessPage(driver);
+            Assert.IsTrue(signInSuccessPage.VerifyPage(), "SignInSuccessPage VerifyPage() FAILED");
+            Assert.IsTrue(signInSuccessPage.VerifySignInHomePage(signInData.userName), "VerifySignInHomePage() FAILED");
         }
 
         [TestMethod]
         public void TestInvalidSignIn()
         {
-            // Verify TestData is loaded properly
-            Assert.IsTrue(testData.isLoaded, "TestData load FAILED");
+            // Verify TestData is loaded
+            Assert.IsNotNull(testData, "TestData load FAILED");
 
-            HomePage homePage = new HomePage(GetDriver());
+            // Perform SigIn
+            SignInPage signInPage = PerformSignIn(testData.GetTestData("TestInvalidSignIn"));
+
+            // Verify error page is loaded
+            Assert.IsTrue(signInPage.VerifySignInErrorMessage(), "VerifySignInErrorMessage() FAILED");
+        }
+
+        [TestMethod]
+        public void TestSignInInActiveUser()
+        {
+            // Verify TestData is loaded
+            Assert.IsNotNull(testData, "TestData load FAILED");
+
+            // Perform SignIn
+            SignInPage signInPage = PerformSignIn(testData.GetTestData("TestSignInInActiveUser"));
+
+            // Verify inactive page is loaded
+            Assert.IsTrue(signInPage.VerifySignInErrorMessageInactiveUser(), "VerifySignInErrorMessageInactiveUser() FAILED");
+        }
+
+
+        [TestMethod]
+        public void TestSignInWithUserNameOnly()
+        {
+            // Verify TestData is loaded
+            Assert.IsNotNull(testData, "TestData load FAILED");
+
+            // Perform SignIn
+            SignInPage signInPage = PerformSignIn(testData.GetTestData("TestSignInWithUserNameOnly"));
+
+            // Verify error page is loaded
+            Assert.IsTrue(signInPage.VerifySignInErrorMessage(), "VerifySignInErrorMessage() FAILED");
+        }
+
+        [TestMethod]
+        public void TestSignInWithPasswordOnly()
+        {
+            // Verify TestData is loaded
+            Assert.IsNotNull(testData, "TestData load FAILED");
+
+            // Perform SignIn
+            SignInPage signInPage = PerformSignIn(testData.GetTestData("TestSignInWithUserNameOnly"));
+
+            // Verify error page is loaded
+            Assert.IsTrue(signInPage.VerifySignInErrorMessage(), "VerifySignInErrorMessage() FAILED");
+        }
+
+        [TestMethod]
+        public void TestSignInWithoutUserNameAndPassword()
+        {
+            // Verify TestData is loaded
+            Assert.IsNotNull(testData, "TestData load FAILED");
+
+            // Perform SignIn
+            SignInPage signInPage = PerformSignIn(testData.GetTestData("TestSignInWithUserNameOnly"));
+
+            // Verify error page is loaded
+            Assert.IsTrue(signInPage.VerifySignInErrorMessage(), "VerifySignInErrorMessage() FAILED");
+        }
+
+        [TestMethod]
+        public void TestSignInForgotPassword()
+        {
+            // Verify driver is initialized
+            Assert.IsNotNull(driver, "Driver initialization FAILED");
+
+            // Verify Home page is loaded
+            HomePage homePage = new HomePage(driver);
+            Assert.IsTrue(homePage.VerifyPage(), "HomePage VerifyPage() FAILED");
+
+            // Verify SignIn page is loaded
             SignInPage signInPage = homePage.GoToSignInPage();
             Assert.IsNotNull(signInPage, "GoToSignInPage() FAILED");
-            if (signInPage == null) return; // Test failed
+            Assert.IsTrue(signInPage.VerifyPage(), "SignInPage VerifyPage() FAILED");
 
-            bool isPageVerified = signInPage.VerifyPage();
-            Assert.IsTrue(isPageVerified, "VerifyPage() FAILED");
-            if (!isPageVerified) return; // Test failed
+            // Navigate to forgot page
+            ForgotPasswordPage forgotPasswordPage = signInPage.GoToForgotPasswordPage();
+            Assert.IsNotNull(forgotPasswordPage, "GoToForgotPasswordPage() FAILED");
 
-            Assert.IsTrue(signInPage.SetUserName("dummy_user_name"), "SetUserName() FAILED");
-            Assert.IsTrue(signInPage.SetPassword("dummy_password"), "SetPassword() FAILED");
-            Assert.IsNotNull(signInPage.ClickSignInButton(), "ClickSignInButton() FAILED");
-
-            // @todo - check error
+            // Verify navigate page is loaded
+            Assert.IsTrue(forgotPasswordPage.VerifyPage(), "ForgotPasswordPage VerifyPage() FAILED");
         }
 
     }

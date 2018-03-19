@@ -64,12 +64,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Config\TestConfig.cs" />
     <Compile Include="src\PageObjects\BasePage.cs" />
+    <Compile Include="src\PageObjects\ForgotPasswordPage.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\PageObjects\HomePage.cs" />
     <Compile Include="src\PageObjects\SignInPage.cs" />
+    <Compile Include="src\PageObjects\SignInSuccessPage.cs" />
     <Compile Include="src\TestData\SignInTestData.cs" />
     <Compile Include="src\TestData\TestData.cs" />
     <Compile Include="src\Tests\SignInPageTest.cs" />
-    <Compile Include="src\Tests\BaseTest.cs">
+    <Compile Include="src\Tests\TestBase.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
