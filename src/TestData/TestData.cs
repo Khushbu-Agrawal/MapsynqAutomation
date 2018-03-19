@@ -15,7 +15,7 @@ namespace MapsynQ.TestData
         public bool isLoaded { get; set; }
 
         // Derived classes to override
-        public abstract void Load();
+        public abstract void Load(String p_FileName);
 
         // Gets the TD full file path
         public String GetFilePath(String p_FileName)

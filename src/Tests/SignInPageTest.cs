@@ -22,7 +22,7 @@ namespace MapsynQ.Tests
     public class SignInPageTest : TestBase
     {
         // Test data for this class
-        private SignInTestData testData = new SignInTestData();
+        private SignInTestData testData = new SignInTestData("SignIn.json");
         private IWebDriver driver;
 
         //////////////////////////////////////////////////////////////////////
@@ -176,5 +176,3 @@ namespace MapsynQ.Tests
 
     }
 }
-    
-

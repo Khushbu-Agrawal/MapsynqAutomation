@@ -17,27 +17,24 @@ namespace MapsynQ.TestData
 
     public class SignInTestData : TestData
     {
-        // Constants
-        private const String TD_FILE_NAME = "SignIn.json";
-
         // Class data
         private Dictionary<String, SignInData> dataSet;
 
         // Constructor
-        public SignInTestData()
+        public SignInTestData(String p_FileName)
         {
-            Load(); // load test data
+            Load(p_FileName); // load test data
         }
 
         // Load TD for SignIn page test cases
-        public override void Load()
+        public override void Load(String p_FileName)
         {
             if (isLoaded) return; // don't reload
 
             dataSet = new Dictionary<String, SignInData>();
             try
             {
-                String jsonString = File.ReadAllText(GetFilePath(TD_FILE_NAME));
+                String jsonString = File.ReadAllText(GetFilePath(p_FileName));
                 dataSet = JsonConvert.DeserializeObject<Dictionary<String, SignInData>>(jsonString);
                 if ((dataSet != null) && dataSet.Count() > 0)
                 {

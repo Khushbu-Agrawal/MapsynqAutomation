@@ -67,12 +67,27 @@
     <Compile Include="src\PageObjects\ForgotPasswordPage.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\PageObjects\GalactioPage.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\PageObjects\HomePage.cs" />
+    <Compile Include="src\PageObjects\MobileAppPage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\PageObjects\RegisterPage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\PageObjects\SGGPSNavigationPage.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\PageObjects\SignInPage.cs" />
     <Compile Include="src\PageObjects\SignInSuccessPage.cs" />
     <Compile Include="src\TestData\SignInTestData.cs" />
     <Compile Include="src\TestData\TestData.cs" />
     <Compile Include="src\Tests\SignInPageTest.cs" />
+    <Compile Include="src\Tests\ForgotPasswordPageTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\Tests\TestBase.cs">
       <SubType>Code</SubType>
     </Compile>
