@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -17,8 +18,15 @@ namespace MapsynQ.PageObjects
     // Class provides all interactions with home page of the application
     class HomePage : BasePage
     {
-       // Constants
+        // Constants
         private const String PAGE_TITLE = "mapSYNQ - Live Traffic Information Platform";
+
+        public enum DirectionTypes {
+            TRAFFIC_AWARE = 0,
+            TOLL_AWARE,
+            FASTEST,
+            SHORTEST
+        }; 
 
         [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Sign in')]")]
         private IWebElement signIn;
@@ -37,13 +45,13 @@ namespace MapsynQ.PageObjects
 
         //Direction Tab
 
-        [FindsBy(How = How.ClassName, Using = "//*[contains(text(),'directions_tab')]")]
+        [FindsBy(How = How.XPath, Using = "//a[@class='tab_button directions_tab sprite']")]
         private IWebElement directions;
 
         [FindsBy(How = How.ClassName, Using = "//*[contains(text(),'route_swap_button')]")]
         private IWebElement routeSwapButton;
 
-        [FindsBy(How = How.Id, Using = "get_direction")]
+        [FindsBy(How = How.XPath, Using = "//input[@id='get_direction']")]
         private IWebElement getDirectionsButton;
 
         [FindsBy(How = How.Id, Using = "poi_from")]
@@ -67,41 +75,29 @@ namespace MapsynQ.PageObjects
         [FindsBy(How = How.Id, Using = "btnClear")]
         private IWebElement clearRouteButton;
 
-        [FindsBy(How = How.Id, Using = "divTrafficRoute")]
-        private IWebElement trafficAwareRouteTable;
+        [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Traffic Aware Route')]")]
+        private IWebElement trafficAwareResult;
 
-        [FindsBy(How = How.Id, Using = "divTrafficRouteTravelTimeDistance")]
-        private IWebElement trafficAwareDistance;
+        [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Toll aware')]")]
+        private IWebElement tollAwareResult;
 
-        [FindsBy(How = How.Id, Using = "spTrafficTt")]
-        private IWebElement trafficAwareTime;
+        [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Fastest')]")]
+        private IWebElement fastestResult;
 
-        [FindsBy(How = How.Id, Using = "divFastestRoute")]
-        private IWebElement fastestRouteTable;
+        [FindsBy(How = How.XPath, Using = "//*[contains(text(),'Shortest')]")]
+        private IWebElement shortestResult;
 
-        [FindsBy(How = How.Id, Using = "divFastestRouteTravelTimeDistance")]
-        private IWebElement fastestRouteDistance;
+        [FindsBy(How = How.XPath, Using = "//span[@id='divTrafficRouteTravelTimeDistance']")]
+        private IWebElement trafficAwareResultDetails;
 
-        [FindsBy(How = How.Id, Using = "spFastestTt")]
-        private IWebElement fastestRouteTime;
+        [FindsBy(How = How.XPath, Using = "//span[@id='divErpRouteTravelTimeDistance']")]
+        private IWebElement tollAwareResultDetails;
 
-        [FindsBy(How = How.Id, Using = "divErpRoute")]
-        private IWebElement tollAwareRouteTable;
+        [FindsBy(How = How.XPath, Using = "//span[@id='divFastestRouteTravelTimeDistance']")]
+        private IWebElement fastestResultDetails;
 
-        [FindsBy(How = How.Id, Using = "divErpRouteTravelTimeDistance")]
-        private IWebElement tollRouteDistance;
-
-        [FindsBy(How = How.Id, Using = "spErpTt")]
-        private IWebElement tollRouteTime;
-
-        [FindsBy(How = How.Id, Using = "divShortestRoute")]
-        private IWebElement shortestRouteTable;
-
-        [FindsBy(How = How.Id, Using = "divShortestRouteTravelTimeDistance")]
-        private IWebElement shortestRouteDistance;
-
-        [FindsBy(How = How.Id, Using = "spShortestTt")]
-        private IWebElement shortestRouteTime;
+        [FindsBy(How = How.XPath, Using = "//span[@id='divShortestRouteTravelTimeDistance']")]
+        private IWebElement shortestResultDetails;
 
         [FindsBy(How = How.Id, Using = "traffic_route_ribbon")]
         private IWebElement trafficAwareRibbon;
@@ -259,7 +255,7 @@ namespace MapsynQ.PageObjects
 
         public bool VerifyDirection()
         {
-            return (getDirectionsButton.Text == "Get Directions");
+            return (getDirectionsButton.GetAttribute("value") == "Get Directions");
         }
 
         public bool SetSourceLocation(String p_Source)
@@ -273,8 +269,25 @@ namespace MapsynQ.PageObjects
                     return LogError("Source text box is disabled or invisible!");
                 }
 
-                sourceLocation.SendKeys(Keys.Clear);
-                sourceLocation.SendKeys(p_Source);
+               sourceLocation.Clear();
+               sourceLocation.SendKeys(p_Source);
+
+               WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 10));
+
+               wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@title='BEDOK MALL']")));
+
+               IList<IWebElement> divs = driver.FindElements(By.XPath("//div[@class='autocomplete-w1']"));
+               IList<IWebElement> divsWithTitle = divs[1].FindElements(By.TagName("div"));
+
+               for (int i = 0; i < divsWithTitle.Count - 1; i++)
+               {
+                   if (divsWithTitle[i].Text == p_Source)
+                   {
+                       divsWithTitle[i].Click();
+                       break;
+                   }
+               }
+       
             }
             catch (Exception ex)
             {
@@ -295,8 +308,25 @@ namespace MapsynQ.PageObjects
                     return LogError("Destination text box is disabled or invisible!");
                 }
 
-                destination.SendKeys(Keys.Clear);
+                destination.Clear();
                 destination.SendKeys(p_Destination);
+
+                WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 10));
+
+                wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@title='CHANGI AIRPORT']")));
+
+                IList<IWebElement> divs = driver.FindElements(By.XPath("//div[@class='autocomplete-w1']"));
+                IList<IWebElement> divsWithTitle = divs[2].FindElements(By.TagName("div"));
+
+                for (int i = 0; i < divsWithTitle.Count - 1; i++)
+                {
+                    if (divsWithTitle[i].Text == p_Destination)
+                    {
+                        divsWithTitle[i].Click();
+                        break;
+                    }
+                }
+  
             }
             catch (Exception ex)
             {
@@ -346,17 +376,36 @@ namespace MapsynQ.PageObjects
 
         }
 
-        public bool ClickGetDirection()
+        public bool ClickGetDirection(DirectionTypes p_DirectionType)
         {
             try
             {
                 if (!getDirectionsButton.Enabled || !getDirectionsButton.Displayed)
                 {
-                    return LogError("Source text box is disabled or invisible!");
+                    return LogError("Get Directions button is disabled or invisible!");
+                }
+                
+                getDirectionsButton.Click();
 
+                // Wait for the response
+                WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 10));
+                switch(p_DirectionType)
+                {
+                    case DirectionTypes.TRAFFIC_AWARE:
+                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[contains(text(),'Traffic Aware Route')]")));
+                        break;
+                    case DirectionTypes.TOLL_AWARE:
+                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[contains(text(),'Toll aware')]")));
+                        break;
+                    case DirectionTypes.FASTEST:
+                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[contains(text(),'Fastest')]")));
+                        break;
+                    case DirectionTypes.SHORTEST:
+                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[contains(text(),'Shortest')]")));
+                        break;
                 }
 
-                getDirectionsButton.Click();
+                Thread.Sleep(1000); // hacky
             }
             catch (Exception ex)
             {
@@ -407,7 +456,7 @@ namespace MapsynQ.PageObjects
         {
             try
             {
-                if (!trafficAware.Enabled || !trafficAware.Displayed)
+                if (!tollAware.Enabled || !tollAware.Displayed)
                 {
                     return LogError("Toll Aware Checkbox is disabled or invisible!");
                 }
@@ -543,6 +592,7 @@ namespace MapsynQ.PageObjects
                 }
 
                 routeSwapButton.Click();
+                
             }
             catch (Exception ex)
             {
@@ -553,62 +603,157 @@ namespace MapsynQ.PageObjects
 
         }
 
-        public bool VerifyTrafficAwareRoute()
+        public bool VerifyAlertMessageWithEmptySourceDestination()
         {
-            bool ok = false;
             try
             {
-                IList<IWebElement> trafficAwareRows = trafficAwareRouteTable.FindElements(By.TagName("tr"));
-                foreach (var elemTr in trafficAwareRows)
+                string message = "Please enter route Start and Destination";
+                IAlert alert = driver.SwitchTo().Alert();
+                if (alert.Text != message)
                 {
+                    return false;
 
-                    IList<IWebElement> columns = elemTr.FindElements(By.TagName("td"));
- 
-                    foreach (var elemTd in columns)
-                    {
-                        if (elemTd.Text == "Traffic Aware Route")
-                        {
-                            ok = true;
-                            return ok;
-                        }
-                    }
                 }
-
+                alert.Accept();
+                
             }
-
             catch (Exception ex)
             {
-                return LogError("Exception caught while performing VerifyTrafficAwareRoute(), error: " + ex.ToString());
+                return LogError("Exception caught while performing VerifyAlertMessageWithEmptySourceDestination(), error: " + ex.ToString());
             }
 
-            return ok;
+            return true;
         }
 
-        public bool VerifyTrafficAwareDistanceTimeCharges(int p_Distance, int p_Time, int p_Charges)
+        public bool VerifyAlertMessageWithInvalidSourceDestination()
         {
-            string values = null;
-            string[] result = null;
             try
             {
-                values = trafficAwareDistance.Text;
-                result = values.Split('|');
-                if (result[0] == p_Distance.ToString() && result[1] == p_Time.ToString() && result[2] == p_Charges.ToString())
+                string message = "We are unable to find the directions for given from/to. Please try again.";
+                IAlert alert = driver.SwitchTo().Alert();
+                if (alert.Text != message)
                 {
+                    return false;
+
                 }
+
+                alert.Accept();
             }
 
             catch (Exception ex)
             {
-                return LogError("Exception caught while performing VerifyTrafficAwareRoute(), error: " + ex.ToString());
+                return LogError("Exception caught while performing VerifyAlertMessageWithInvalidSourceDestination(), error: " + ex.ToString());
+            }
+
+            return true;
+        }
+
+        public bool VerifyAlertMessageForCurrentLocation()
+        {
+            try
+            {
+                string message = "Please grant permission to you use the location service on your browser to use your 'Current location'.";
+                IAlert alert = driver.SwitchTo().Alert();
+                if (alert.Text != message)
+                {
+                    return false;
+                }
+
+                alert.Accept();
+            }
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyAlertMessageForCurrentLocation(), error: " + ex.ToString());
+            }
+
+            return true;
+        }
+
+        private bool VerifyTrafficOutput(String p_TrafficString)
+        {
+            try
+            {
+                String[] result = p_TrafficString.Split('|');
+                String[] distanceArr = result[0].Trim().Split(' ');
+                String[] timeArr = result[1].Trim().Split(' ');
+                String[] tollArr = result[2].Trim().Split('$');
+
+                if ((Int32.Parse(distanceArr[0]) > 0) && (Int32.Parse(timeArr[0]) > 0) && (result[2].Trim().Contains("S$")))
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyTrafficOutput(), error: " + ex.ToString());
             }
 
             return false;
+        }
 
+        public bool VerifyTrafficAwareResults()
+        {
+            try
+            {
+                if (trafficAwareResult.Text != "Traffic Aware Route") return false;
+                return VerifyTrafficOutput(trafficAwareResultDetails.Text);
+            }
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyTrafficAwareResults(), error: " + ex.ToString());
+            }
+
+            return false;
+        }
+
+        public bool VerifyTollAwareResults()
+        {
+            try
+            {
+                if (tollAwareResult.Text != "Toll aware") return false;
+                return VerifyTrafficOutput(tollAwareResultDetails.Text);
+            }
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyTollAwareResults(), error: " + ex.ToString());
+            }
+
+            return false;
+        }
+
+        public bool VerifyFastestResults()
+        {
+            try
+            {
+                if (fastestResult.Text != "Fastest") return false;
+
+                String res = fastestResultDetails.Text;
+                return VerifyTrafficOutput(fastestResultDetails.Text);
+            }
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyFastestResults(), error: " + ex.ToString());
+            }
+
+            return false;
+        }
+
+        public bool VerifyShortestResults()
+        {
+            try
+            {
+                if (shortestResult.Text != "Shortest") return false;
+                return VerifyTrafficOutput(shortestResultDetails.Text);
+            }
+            catch (Exception ex)
+            {
+                return LogError("Exception caught while performing VerifyShortestResults(), error: " + ex.ToString());
+            }
+
+            return false;
         }
 
         #endregion
 
-        #region
+        #region 
 
         public void ClickLive()
         {
@@ -624,5 +769,6 @@ namespace MapsynQ.PageObjects
         }
 
         #endregion
+
     }
 }

@@ -1,0 +1,38 @@
+{
+	"TestDirectionWithTrafficAware":
+	{
+		"Source": "BEDOK MALL",
+		"Destination": "CHANGI AIRPORT",
+		"TrafficAware": true,
+		"TollAware": false,
+		"Fastest": false,
+		"Shortest": false
+	},
+	"TestDirectionWithTollAware":
+	{
+		"Source": "BEDOK MALL",
+		"Destination": "CHANGI AIRPORT",
+		"TrafficAware": false,
+		"TollAware": true,
+		"Fastest": false,
+		"Shortest": false
+	},
+	"TestDirectionWithFastestRoute":
+	{
+		"Source": "BEDOK MALL",
+		"Destination": "CHANGI AIRPORT",
+		"TrafficAware": false,
+		"TollAware": false,
+		"Fastest": true,
+		"Shortest": false
+	},
+	"TestDirectionWithShortestRoute":
+	{
+		"Source": "BEDOK MALL",
+		"Destination": "CHANGI AIRPORT",
+		"TrafficAware": false,
+		"TollAware": false,
+		"Fastest": false,
+		"Shortest": true
+	}
+}

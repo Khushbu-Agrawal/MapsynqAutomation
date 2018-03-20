@@ -36,7 +36,7 @@ namespace MapsynQ.Tests
         [TestCleanup]
         public void TestClean()
         {
-            driver.Close(); // Cleanup driver
+            driver.Quit(); // Cleanup driver
         }
 
         ////////////////////////////////////////////////////////////////////

@@ -72,7 +72,7 @@ namespace MapsynQ.PageObjects
                     return LogError("Username text box is disabled or invisible!");
                 }
 
-                userName.SendKeys(Keys.Clear);
+                userName.Clear();
                 userName.SendKeys(p_UserName);
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace MapsynQ.PageObjects
                     return LogError("Password text box is disabled!");
                 }
 
-                password.SendKeys(Keys.Clear);
+                password.Clear();
                 password.SendKeys(p_Password);
             }
             catch (Exception ex)

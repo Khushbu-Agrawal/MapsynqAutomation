@@ -61,7 +61,7 @@ namespace MapsynQ.PageObjects
                     return LogError("Username text box is disabled or invisible!");
                 }
 
-                userName.SendKeys(Keys.Clear);
+                userName.Clear();
                 userName.SendKeys(p_UserName);
             }
             catch (Exception ex)
